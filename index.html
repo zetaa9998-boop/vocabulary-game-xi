@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advanced Intention Vocabulary Challenge - Grade XI SMK</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:linear-gradient(135deg,#e0f2fe,#eef2ff);color:#1f2937}
+.wrap{max-width:980px;margin:auto;padding:20px}
+.card{background:#fff;padding:25px;border-radius:20px;box-shadow:0 8px 25px #0002;margin-bottom:18px}
+.hero{background:linear-gradient(135deg,#312e81,#0f766e);color:#fff}
+h1{margin-top:0}.hidden{display:none}
+input{width:100%;padding:12px;margin:6px 0 12px;border:2px solid #ddd;border-radius:10px;font-size:16px}
+button{border:0;border-radius:10px;padding:12px 16px;margin:5px;cursor:pointer;font-size:15px}
+button:hover{transform:translateY(-1px)}
+.primary{background:#4f46e5;color:#fff}.green{background:#0f766e;color:#fff}.gray{background:#e5e7eb}
+.bar{height:10px;background:#ddd;border-radius:10px;overflow:hidden}.fill{height:100%;width:0;background:#4f46e5;transition:.3s}
+.question{font-size:20px;font-weight:bold;line-height:1.5;text-align:center;margin:22px 0}
+.context{padding:17px;background:#f8fafc;border-left:5px solid #4f46e5;border-radius:12px;line-height:1.6}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.option{width:100%;margin:0;background:#f8fafc;border:2px solid #cbd5e1;text-align:left;line-height:1.4}
+.option:hover{background:#eef2ff}.option.correct{border-color:#15803d;background:#dcfce7}.option.wrong{border-color:#dc2626;background:#fee2e2}
+.feedback{min-height:45px;font-weight:bold;margin:14px 0;line-height:1.5}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:bold;margin:3px}
+.scores{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.score{background:#f8fafc;padding:15px;text-align:center;border-radius:12px}
+.score b{display:block;font-size:27px;color:#4f46e5}
+table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid #ddd;text-align:center}
+.tip{font-size:14px;color:#475569}
+@media(max-width:650px){.options{grid-template-columns:1fr}.scores{grid-template-columns:1fr}.question{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card hero">
+<h1>🧠 ADVANCED INTENTION VOCABULARY CHALLENGE</h1>
+<p><b>Grade XI SMK • B2–C1 Challenge</b></p>
+<p>Master sophisticated vocabulary for expressing intentions, ambitions, commitments, expectations and future career plans.</p>
+</div>
+
+<div id="start" class="card">
+<h2>👤 Student Information</h2>
+<label>Name</label><input id="name" placeholder="Enter your name">
+<label>Class</label><input id="class" placeholder="Example: XI TKJ 1">
+<p><span class="badge">25 Questions</span><span class="badge">B2–C1 Vocabulary</span><span class="badge">Context & Meaning</span><span class="badge">Score /100</span></p>
+<button class="primary" onclick="begin()">START CHALLENGE ▶</button>
+<p class="tip">This version uses more challenging vocabulary than the basic intention game.</p>
+</div>
+
+<div id="game" class="hidden">
+<div class="card">
+<div><b id="who"></b><span style="float:right">Question <b id="qn">1</b>/25 • Score <b id="sc">0</b></span></div>
+<br><div class="bar"><div class="fill" id="fill"></div></div>
+<div class="question" id="question"></div>
+<div class="context" id="context"></div>
+<div id="options" class="options"></div>
+<div class="feedback" id="fb"></div>
+<button class="gray" onclick="skip()">⏭ Skip</button>
+<button id="next" class="green hidden" onclick="nextQ()">Next ➜</button>
+</div>
+</div>
+
+<div id="result" class="hidden">
+<div class="card">
+<h2>🏆 Advanced Vocabulary Challenge Completed!</h2>
+<p><b>Name:</b> <span id="fn"></span></p><p><b>Class:</b> <span id="fc"></span></p>
+<div class="scores">
+<div class="score"><b id="correct">0</b>Correct / 25</div>
+<div class="score"><b id="percent">0</b>/100</div>
+<div class="score"><b id="level">-</b>Achievement</div>
+</div>
+<div id="msg" class="context" style="margin:18px 0"></div>
+<table><thead><tr><th>No.</th><th>Target Vocabulary</th><th>Result</th></tr></thead><tbody id="rows"></tbody></table>
+<br><button class="primary" onclick="location.reload()">🔄 Play Again</button>
+<button class="green" onclick="window.print()">🖨️ Print Result</button>
+</div>
+</div>
+</div>
+
+<script>
+const Q=[
+["aspire","In the sentence “She aspires to become a software engineer,” what does <b>aspire</b> mean?","She has a strong ambition to achieve a particular goal.",["to have a strong ambition to achieve something","to avoid a difficult career","to postpone an examination","to give up a professional goal"],0],
+["pursue","What does <b>pursue</b> mean in this context?","After graduation, he intends to pursue a career in cybersecurity.",["to follow or work toward something over a period of time","to reject an opportunity immediately","to complete a task without planning","to stop learning a new skill"],0],
+["anticipate","What does <b>anticipate</b> mean?","We anticipate facing several challenges during our internship.",["to expect something before it happens","to forget something that happened","to prevent every possible problem","to refuse to make a prediction"],0],
+["undertake","What does <b>undertake</b> mean?","The students intend to undertake a six-month industry project.",["to accept and begin a task or responsibility","to cancel a professional project","to observe someone else's work","to avoid responsibility"],0],
+["commit","What does <b>commit</b> mean in this sentence?","I am committed to improving my communication skills.",["to give serious time and effort to something","to change an intention frequently","to avoid making a decision","to finish something without effort"],0],
+["endeavor","What is the closest meaning of <b>endeavor</b>?","She will endeavor to gain practical experience before graduation.",["to make a serious effort to achieve something","to refuse to learn from experience","to predict a future event","to abandon a professional plan"],0],
+["prospective","What does <b>prospective</b> mean?","The school invited prospective employers to the career fair.",["expected or likely to become something in the future","already retired from a profession","unable to make a career plan","unrelated to future employment"],0],
+["ambition","What does <b>ambition</b> mean?","His ambition is to establish his own technology company.",["a strong desire to achieve something","a temporary school assignment","a technical problem","a completed qualification"],0],
+["objective","What does <b>objective</b> mean in this context?","Our main objective is to obtain an international certification.",["a specific result or goal that you aim to achieve","an unexpected difficulty","a personal weakness","a casual activity"],0],
+["prioritize","What does <b>prioritize</b> mean?","Before applying for jobs, she plans to prioritize improving her English.",["to decide what is most important and deal with it first","to avoid all important tasks","to complete every task simultaneously","to postpone a goal indefinitely"],0],
+["allocate","What does <b>allocate</b> mean?","We intend to allocate more time to technical training.",["to distribute or set aside something for a particular purpose","to remove a goal from a plan","to forget a future responsibility","to replace training with entertainment"],0],
+["acquire","What does <b>acquire</b> mean?","He hopes to acquire advanced networking skills.",["to gain or obtain something through learning or experience","to lose an ability","to avoid professional development","to cancel a training program"],0],
+["enhance","What does <b>enhance</b> mean?","The course is designed to enhance students' employability.",["to improve the quality, value or effectiveness of something","to make something less useful","to prevent someone from learning","to remove an opportunity"],0],
+["broaden","What does <b>broaden</b> mean?","She wants to broaden her knowledge of digital marketing.",["to expand or increase the range of something","to reduce professional knowledge","to abandon a field of study","to repeat exactly the same experience"],0],
+["embark","What does <b>embark on</b> mean?","After graduation, they plan to embark on a new career pathway.",["to begin a new project, activity or stage of life","to finish a long-term project","to avoid a new responsibility","to return to an earlier plan"],0],
+["milestone","What is a <b>milestone</b>?","Obtaining his first professional certificate was an important milestone.",["an important stage or achievement in progress toward a goal","a minor mistake in a project","a temporary change of plan","a type of technical equipment"],0],
+["qualification","What does <b>qualification</b> mean?","She intends to gain an additional professional qualification.",["an official skill, certificate or achievement needed for a job or activity","a personal preference about a career","a short-term hobby","an informal conversation"],0],
+["placement","What is a <b>work placement</b>?","The school plans to arrange work placements for final-year students.",["a period when a student works in an organization to gain experience","a final written examination","a permanent employment contract","a university entrance test"],0],
+["apprenticeship","What is an <b>apprenticeship</b>?","He intends to apply for an apprenticeship with a manufacturing company.",["a structured period of learning a trade through practical work and training","a short holiday before graduation","a type of university scholarship","an online language test"],0],
+["transition","What does <b>transition</b> mean?","Students need to prepare for the transition from school to the workplace.",["the process of changing from one stage or situation to another","a decision to cancel a career plan","a method of memorizing vocabulary","a technical repair procedure"],0],
+["feasible","What does <b>feasible</b> mean?","Before starting the project, we need to decide whether our plan is feasible.",["possible and practical to achieve","impossible under any circumstances","already completed successfully","unrelated to the intended goal"],0],
+["contingency","What is a <b>contingency plan</b>?","We have prepared a contingency plan in case the internship schedule changes.",["a backup plan for a possible future problem or change","a plan that can never be changed","a record of past achievements","a list of personal interests"],0],
+["sustain","What does <b>sustain</b> mean?","She intends to sustain her motivation throughout the training program.",["to maintain something over a period of time","to stop something immediately","to reduce a goal deliberately","to begin something without preparation"],0],
+["demonstrate","What does <b>demonstrate</b> mean?","Students will need to demonstrate their technical skills during the interview.",["to show clearly that you have a skill, quality or ability","to hide a professional ability","to postpone a job interview","to memorize an application form"],0],
+["adapt","What does <b>adapt</b> mean?","Young workers must be willing to adapt to changes in technology.",["to change or adjust to suit a new situation","to reject every new situation","to keep exactly the same method forever","to avoid learning new technology"],0]
+];
+
+let i=0,score=0,answered=false,results=[];
+const $=id=>document.getElementById(id);
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5)}
+
+function begin(){
+ if(!$("name").value.trim()||!$("class").value.trim()){alert("Please enter your name and class.");return}
+ $("who").textContent=$("name").value+" • "+$("class").value;
+ $("start").classList.add("hidden");$("game").classList.remove("hidden");loadQ();
+}
+function loadQ(){
+ answered=false;$("qn").textContent=i+1;$("sc").textContent=score;
+ $("fill").style.width=(i/25*100)+"%";$("question").innerHTML=Q[i][1];$("context").innerHTML="💬 <b>Context:</b> "+Q[i][2];
+ $("fb").textContent="";$("next").classList.add("hidden");$("options").innerHTML="";
+ shuffle(Q[i][3]).forEach((option)=>{
+   let b=document.createElement("button");b.className="option";b.innerHTML=option;
+   b.onclick=()=>choose(b,option);$("options").appendChild(b);
+ });
+}
+function choose(btn,choice){
+ if(answered)return;answered=true;
+ let correct=Q[i][3][Q[i][4]],ok=choice===correct;
+ [...$("options").children].forEach(b=>{b.disabled=true;if(b.innerHTML===correct)b.classList.add("correct")});
+ if(ok){score++;$("sc").textContent=score;$("fb").innerHTML="✅ <span style='color:#15803d'>Correct!</span>"}
+ else{btn.classList.add("wrong");$("fb").innerHTML="❌ Correct answer: <b>"+correct+"</b>"}
+ results.push({word:Q[i][0],ok});$("next").classList.remove("hidden");
+}
+function skip(){
+ if(answered)return;answered=true;
+ let correct=Q[i][3][Q[i][4]];
+ [...$("options").children].forEach(b=>{b.disabled=true;if(b.innerHTML===correct)b.classList.add("correct")});
+ $("fb").innerHTML="⏭️ Skipped. Correct answer: <b>"+correct+"</b>";
+ results.push({word:Q[i][0],ok:false});$("next").classList.remove("hidden");
+}
+function nextQ(){if(i<24){i++;loadQ()}else{showResult()}}
+function showResult(){
+ let pct=Math.round(score/25*100);
+ let level=pct>=90?"Excellent":pct>=80?"Very Good":pct>=70?"Good":pct>=60?"Fair":"Keep Practicing";
+ $("game").classList.add("hidden");$("result").classList.remove("hidden");
+ $("fn").textContent=$("name").value;$("fc").textContent=$("class").value;
+ $("correct").textContent=score;$("percent").textContent=pct;$("level").textContent=level;
+ $("msg").innerHTML="🎯 <b>Final Score: "+score+"/25 = "+pct+"/100</b><br>"+
+ (pct>=80?"Excellent! You can recognize sophisticated vocabulary for intentions, ambitions and career planning.":"Keep practicing. Try using each target word in your own sentence about your future plans.");
+ $("rows").innerHTML=results.map((r,n)=>"<tr><td>"+(n+1)+"</td><td>"+r.word+"</td><td>"+(r.ok?"✅ Correct":"❌ Incorrect")+"</td></tr>").join("");
+}
+</script>
+</body>
+</html>
